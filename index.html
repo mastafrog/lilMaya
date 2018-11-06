@@ -1,1 +1,162 @@
-<h2>lilMaya</h2>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>lilMaya 0001</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.15.1/phaser-arcade-physics.js"></script>
+    <style media="screen">
+
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        display: block;
+      }
+
+      #container {
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+/*        display: none; */
+        z-index: 1;
+    }
+
+    #orientation
+    {
+        overflow: hidden;
+        width:100%;
+    /*    height:100%; */
+        position:fixed;
+        bottom:0px;
+        left:0px;
+        background-color:red;
+    /*    background-image:url('playportrait.png');
+        background-repeat:no-repeat;
+        background-position: center center;
+    */
+    /*    display:none; */
+    }
+
+    @media screen and (orientation: portrait) {
+        #orientation {
+            background-color: blue;
+        }
+        html {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+        }
+    /*html {
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }*/
+}
+    </style>
+  </head>
+  <body>
+      <div id="orientation">
+          Turn Device
+      </div>
+<div id="container">
+
+  </div>
+  </body>
+  <!--<script type="text/javascript" src="src/stuff.js"></script>-->
+  <script type="text/javascript">
+
+    var graphics;
+
+      class Background extends Phaser.Scene {
+
+          constructor ()
+          {
+              super({key: 'Background', active: true });
+              this.orientaiton;
+              window.addEventListener('orientationchange', this.onOrientationChange.bind(this));
+
+            graphics = this.add.graphics();
+
+                //  We need 3 extra pointers, as we only get 1 by default
+                this.input.addPointer(3);
+          }
+
+          updateDragPose() {
+          }
+
+          preload ()
+          {
+          //    this.load.image('tiles', 'platformer_tiles.png');
+          }
+
+          create ()
+          {
+              this.fps = this.add.text(10, 10, 'FPS: '+ 0 , { fontFamily: 'Helvetica', fontSize: 20, color: '#00ff00' });
+              this.debugtext = this.add.text(10, 32, 'FPS: '+ 0 , { fontFamily: 'Helvetica', fontSize: 20, color: '#ffffff' });
+              this.debugtext.setText( "Screen Hieght: " + game.config.height + "\n" + "Screen Wiedth: " + game.config.width );
+          }
+
+          update (time, delta)
+          {
+              this.fps.setText( Math.floor( 1 / delta * 1000 ) );
+
+                if (this.input.pointer1.isDown || this.input.pointer2.isDown || this.input.pointer3.isDown || this.input.pointer4.isDown)
+                {
+                    graphics.clear();
+                }
+
+                graphics.fillStyle(0xff0000, 1);
+                graphics.fillRect(this.input.pointer1.x, this.input.pointer1.y, 64, 64);
+
+                graphics.fillStyle(0x00ff00, 1);
+                graphics.fillRect(this.input.pointer2.x, this.input.pointer2.y, 64, 64);
+
+                graphics.fillStyle(0x0000ff, 1);
+                graphics.fillRect(this.input.pointer3.x, this.input.pointer3.y, 64, 64);
+
+                graphics.fillStyle(0xff00ff, 1);
+                graphics.fillRect(this.input.pointer4.x, this.input.pointer4.y, 64, 64);
+          }
+              onOrientationChange () {
+                if (window.orientation === undefined) return;
+                switch (window.orientation) {
+                    case -90:
+                    case 90:
+                        if (this.paused) this.resume();
+                        break;
+                    default:
+                        this.pause();
+                }
+            }
+
+      }
+
+      let config = {
+          type: Phaser.AUTO,
+          width: window.innerWidth * window.devicePixelRatio,
+          height: window.innerHeight * window.devicePixelRatio,
+          backgroundColor:  Math.random() * 0x5599bb,
+          parent: 'phaser-example',
+          scene: [ Background ]
+      };
+
+      let game = new Phaser.Game(config);
+
+
+      window.addEventListener( 'touchmove', function() {})
+
+
+
+  </script>
+</html>
